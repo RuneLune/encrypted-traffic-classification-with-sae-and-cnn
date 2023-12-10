@@ -1,0 +1,42 @@
+from matplotlib import pyplot as plt
+from pandas import DataFrame
+from pytorch_lightning import Trainer
+from seaborn import heatmap
+from sklearn.metrics import confusion_matrix
+from torch import set_float32_matmul_precision
+
+from models import AppSAE
+from utils.id import AppName
+
+
+def main() -> None:
+    set_float32_matmul_precision("medium")
+
+    model = AppSAE.load_from_checkpoint(
+        "checkpoints/appsae/AppSAE-epoch=000-val_loss=0.0000.ckpt"
+    )
+    model.eval()
+
+    trainer = Trainer(accelerator="gpu", devices=[2])
+    predictions = trainer.predict(model)
+
+    y = []
+    y_hat = []
+
+    for batch_pred in predictions:
+        y.extend(batch_pred[0])
+        y_hat.extend(batch_pred[1])
+        continue
+
+    cm = confusion_matrix(y, y_hat)
+    df = DataFrame(cm / 1055 * 100, index=AppName, columns=AppName)
+    plt.figure(figsize=(16, 9))
+    plot = heatmap(df, annot=True, cmap="Blues", fmt="02.02f")
+    plot.figure.savefig("appsae_confusion_matrix.png")
+
+    return None
+
+
+if __name__ == "__main__":
+    main()
+    pass
