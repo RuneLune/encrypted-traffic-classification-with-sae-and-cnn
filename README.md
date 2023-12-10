@@ -62,5 +62,5 @@ Results
 ![TrafficSAE](trafficsae_confusion_matrix.png)
 5. Traffic Characterization with CNN
 ![TrafficCNN](trafficcnn_confusion_matrix.png)
-6. Traffci Characterization with Ensemble(SAE+CNN)
+6. Traffic Characterization with Ensemble(SAE+CNN)
 ![TrafficEnsemble](trafficensemble_confusion_matrix.png)
